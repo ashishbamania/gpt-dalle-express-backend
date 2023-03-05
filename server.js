@@ -3,7 +3,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { ChatGPTAPI } from "chatgpt";
 import { Configuration, OpenAIApi } from "openai";
-import "unfetch/polyfill";
+import fetch from "unfetch";
 import dotenv from "dotenv";
 dotenv.config();
 
