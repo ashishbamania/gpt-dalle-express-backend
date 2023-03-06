@@ -1,18 +1,11 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import { ChatGPTAPI } from "chatgpt";
 import { Configuration, OpenAIApi } from "openai";
-import fetch from "unfetch";
 import dotenv from "dotenv";
 dotenv.config();
 
-//Initialize ChatGPT API
-const api = new ChatGPTAPI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-//Initialize DALL-E API
+//Initialize OPENAI API
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -27,19 +20,24 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //POST Route to ChatGPT
-app.post(`/chat`, async (req, res) => {
+app.post("/chat", async (req, res) => {
   try {
     const prompt = req.body.prompt;
-    const response = await api.sendMessage(prompt);
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: prompt }],
+    });
 
-    res.send(response.text);
+    res.send(
+      completion.data.choices[0].message.content.replace(/(\r\n|\n|\r)/gm, "")
+    );
   } catch (error) {
     res.send(error);
   }
 });
 
 //POST Route to DALL-E
-app.post(`/draw`, async (req, res) => {
+app.post("/draw", async (req, res) => {
   try {
     const prompt = req.body.prompt;
     const response = await openai.createImage({
